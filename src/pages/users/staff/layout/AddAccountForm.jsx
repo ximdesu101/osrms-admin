@@ -50,6 +50,7 @@ import {
     icon_class 
 } from "@/components/common/constant";
 import { CreateStaff } from "@/services/staffService";
+import { capitalizeWords } from "@/lib/utils";
 
 const required = (label) => ({ value }) => (!value ? `${label} is required` : undefined);
 
@@ -204,7 +205,7 @@ const AddAccountForm = ({ onCreated }) => {
                                                 <InputGroupInput
                                                     placeholder="26-0001"
                                                     value={field.state.value}
-                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    onChange={(e) => field.handleChange(capitalizeWords(e.target.value))}
                                                     onBlur={field.handleBlur}
                                                 />
                                                 <InputGroupAddon><IdCardLanyard /></InputGroupAddon>
@@ -227,7 +228,7 @@ const AddAccountForm = ({ onCreated }) => {
                                                     <InputGroupInput
                                                         placeholder="Juan"
                                                         value={field.state.value}
-                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                        onChange={(e) => field.handleChange(capitalizeWords(e.target.value))}
                                                         onBlur={field.handleBlur}
                                                     />
                                                     <InputGroupAddon><UserPen /></InputGroupAddon>
@@ -248,7 +249,7 @@ const AddAccountForm = ({ onCreated }) => {
                                                     <InputGroupInput
                                                         placeholder="Ted (Optional)"
                                                         value={field.state.value}
-                                                        onChange={(e) => field.handleChange(e.target.value)}
+                                                        onChange={(e) => field.handleChange(capitalizeWords(e.target.value))}
                                                         onBlur={field.handleBlur}
                                                     />
                                                     <InputGroupAddon><UserPen /></InputGroupAddon>
@@ -268,7 +269,7 @@ const AddAccountForm = ({ onCreated }) => {
                                                         <InputGroupInput
                                                             placeholder="Dela Cruz"
                                                             value={field.state.value}
-                                                            onChange={(e) => field.handleChange(e.target.value)}
+                                                            onChange={(e) => field.handleChange(capitalizeWords(e.target.value))}
                                                             onBlur={field.handleBlur}
                                                         />
                                                         <InputGroupAddon><UserPen /></InputGroupAddon>

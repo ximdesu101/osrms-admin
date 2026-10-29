@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn, capitalizeFirstLetter } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -466,7 +466,7 @@ const AddRequestForm = () => {
                                                 id="note"
                                                 placeholder="Write request instructions or notes..."
                                                 value={note}
-                                                onChange={(e) => setNote(e.target.value)}
+                                                onChange={(e) => setNote(capitalizeFirstLetter(e.target.value))}
                                                 disabled={!canProceedDetails || isSubmitting}
                                                 maxLength={300}
                                             />

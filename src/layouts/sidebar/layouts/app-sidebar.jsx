@@ -52,7 +52,7 @@ const adminNavMain = [
     },
     { title: "Drafts", url: "/drafts", icon: FileBox },
     { title: "Notifications", url: "/notifications", icon: Bell },
-    { title: "Reports", url: "#", icon: ChartNoAxesCombined },
+    { title: "Reports", url: "/reports", icon: ChartNoAxesCombined },
     { title: "Audit Logs", url: "/audit-logs", icon: Logs },
 ];
 

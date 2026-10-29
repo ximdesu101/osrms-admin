@@ -33,6 +33,7 @@ import Notifications from "@/pages/notifications/Notifications";
 import AuditLogs from "@/pages/audit-logs/AuditLogs";
 import Draft from "@/pages/draft/Draft";
 import DocumentRequests from "@/pages/document-requests/DocumentRequests";
+import Reports from "@/pages/reports/Reports";
 
 export const router = createBrowserRouter([
     {
@@ -93,6 +94,7 @@ export const router = createBrowserRouter([
                     { path: "document-requests", element: <DocumentRequests />, handle: { crumb: () => "Document Requests" } },
                     { path: "drafts", element: <Draft />, handle: { crumb: () => "Drafts" } },
                     { path: "notifications", element: <Notifications />, handle: { crumb: () => "Notifications" } },
+                    { path: "reports", element: <Reports />, handle: { crumb: () => "Reports & Analytics" } },
                     { path: "audit-logs", element: <AuditLogs />, handle: { crumb: () => "Audit Logs" } },
                 ],
             },

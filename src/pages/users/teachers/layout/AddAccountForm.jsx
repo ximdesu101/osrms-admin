@@ -199,7 +199,7 @@ const AddAccountForm = ({ onCreated }) => {
                                 <form.Field name="teacherId" validators={{ onChange: required("Employee ID") }}>
                                     {(field) => (
                                         <Field>
-                                            <FieldLabel>Teachers ID</FieldLabel>
+                                            <FieldLabel>Employee ID</FieldLabel>
                                             <InputGroup>
                                                 <InputGroupInput
                                                     placeholder="26-0001"

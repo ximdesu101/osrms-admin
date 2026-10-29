@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { cn } from "@/lib/utils";
@@ -33,24 +33,41 @@ import {
 import LoginImage from "@/assets/LoginBGI.jpg";
 import Logo from "@/assets/Logo.png";
 import { LoginSchema } from "@/schemas/AuthSchema";
-import { AdminLogin } from "@/services/AuthService";
+import { UnifiedLogin } from "@/services/AuthService";
+import { toast } from "sonner";
 
 const Login = ({ className, ...props }) => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem("admin_token");
+        const token =
+            localStorage.getItem("admin_token") ||
+            localStorage.getItem("staff_token");
         if (token) {
             navigate("/dashboard", { replace: true });
         }
     }, [navigate]);
 
     const loginMutation = useMutation({
-        mutationFn: (values) => AdminLogin(values),
+        mutationFn: (values) => UnifiedLogin(values),
         onSuccess: (data) => {
-            localStorage.setItem("admin_token", data.token);
-            localStorage.setItem("admin", JSON.stringify(data.admin));
+            // Clear any previous session
+            localStorage.removeItem("admin_token");
+            localStorage.removeItem("admin");
+            localStorage.removeItem("staff_token");
+            localStorage.removeItem("staff");
+            localStorage.removeItem("auth_role");
+
+            if (data.role === "admin") {
+                localStorage.setItem("admin_token", data.token);
+                localStorage.setItem("admin", JSON.stringify(data.user));
+                localStorage.setItem("auth_role", "admin");
+            } else {
+                localStorage.setItem("staff_token", data.token);
+                localStorage.setItem("staff", JSON.stringify(data.user));
+                localStorage.setItem("auth_role", "staff");
+            }
             navigate("/dashboard", { replace: true });
         },
         onError: (err) => {
@@ -231,6 +248,11 @@ const Login = ({ className, ...props }) => {
                                             )}
                                         </form.Subscribe>
                                     </Field>
+
+                                    <FieldDescription className="text-center">
+                                        Need to activate a Staff account?{" "}
+                                        <Link to="/activate-staff-account">Activate your account</Link>
+                                    </FieldDescription>
                                 </FieldGroup>
                             </form>
 

@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import Login from "@/pages/auth/Login";
+import ActivateStaffAccount from "@/pages/auth/ActivateStaffAccount";
 import AuthProtector from "./protector/AuthProtector";
 import Sidebar from "@/layouts/sidebar/Sidebar";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import TeacherAccount from "@/pages/users/teachers/TeacherAccount";
+import StaffAccount from "@/pages/users/staff/StaffAccount";
 import Forms from "@/pages/forms/Forms";
 import SF1 from "@/pages/forms/school-forms/layouts/sf1/SF1";
 import SF2 from "@/pages/forms/school-forms/layouts/sf2/SF2";
@@ -41,6 +43,10 @@ export const router = createBrowserRouter([
                 index: true,
                 element: <Login />
             },
+            {
+                path: "activate-staff-account",
+                element: <ActivateStaffAccount />
+            },
         ],
     },
     {
@@ -51,6 +57,7 @@ export const router = createBrowserRouter([
                 children: [
                     { path: "dashboard", element: <Dashboard />, handle: { crumb: () => "Dashboard" } },
                     { path: "teacher-account", element: <TeacherAccount />, handle: { crumb: () => "Teacher Account" } },
+                    { path: "staff-account", element: <StaffAccount />, handle: { crumb: () => "Staff Account" } },
                     { path: "forms", element: <Forms />, handle: { crumb: () => "School Forms" } },
                     { path: "school-forms/sf1", element: <SF1 />, handle: { crumb: () => "School Register" } },
                     { path: "school-forms/sf2", element: <SF2 />, handle: { crumb: () => "SF2 – Daily Attendance" } },

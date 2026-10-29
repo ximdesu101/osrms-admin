@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { NavMain } from "@/layouts/sidebar/layouts/nav-main";
 import { NavUser } from "@/layouts/sidebar/layouts/nav-user";
 import {
@@ -27,16 +26,16 @@ import {
     ChartNoAxesCombined,
     Logs,
 } from "lucide-react";
-import { AdminLogout } from "@/services/AuthService";
+import { AdminLogout, StaffLogout } from "@/services/AuthService";
 
-const navMain = [
+const adminNavMain = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     {
         title: "User Management",
         url: "#",
         icon: Users,
         items: [
-            { title: "Staff Account", url: "#" },
+            { title: "Staff Account", url: "/staff-account" },
             { title: "Teacher Accounts", url: "/teacher-account" },
         ],
     },
@@ -57,35 +56,74 @@ const navMain = [
     { title: "Audit Logs", url: "/audit-logs", icon: Logs },
 ];
 
+// Staff: same operational pages, without Admin-exclusive items
+const staffNavMain = [
+    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "Forms", url: "/forms", icon: FileText },
+    { title: "Document Requests", url: "/document-requests", icon: FilePlusCorner },
+    {
+        title: "Document Submission",
+        url: "#",
+        icon: Send,
+        items: [
+            { title: "Submission Request", url: "/submission-requests" },
+            { title: "Submission Approval", url: "/submission-approvals" },
+        ],
+    },
+    { title: "Drafts", url: "/drafts", icon: FileBox },
+    { title: "Notifications", url: "/notifications", icon: Bell },
+];
+
 export function AppSidebar({ ...props }) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    // Read the authenticated admin's data from localStorage
+    const role = React.useMemo(() => localStorage.getItem("auth_role") || "admin", []);
+
     const stored = React.useMemo(() => {
         try {
+            if (role === "staff") {
+                return JSON.parse(localStorage.getItem("staff") || "{}");
+            }
             return JSON.parse(localStorage.getItem("admin") || "{}");
         } catch {
             return {};
         }
-    }, []);
+    }, [role]);
 
-    const user = {
-        name: "System Administrator",
-        username: stored.username ?? "admin",
-        avatar: "",
-    };
+    const user = React.useMemo(() => {
+        if (role === "staff") {
+            const fullName = [stored.first_name, stored.last_name].filter(Boolean).join(" ") || "Staff";
+            return {
+                name: fullName,
+                username: stored.username ?? "staff",
+                avatar: "",
+            };
+        }
+        return {
+            name: "System Administrator",
+            username: stored.username ?? "admin",
+            avatar: "",
+        };
+    }, [role, stored]);
+
+    const navItems = role === "staff" ? staffNavMain : adminNavMain;
 
     const handleLogout = async () => {
         try {
-            await AdminLogout();
+            if (role === "staff") {
+                await StaffLogout();
+            } else {
+                await AdminLogout();
+            }
         } catch {
             // Token may already be invalid — continue with local cleanup
         }
-        // Clear all local admin session data
         localStorage.removeItem("admin_token");
         localStorage.removeItem("admin");
-        // Clear all cached queries so the next user starts fresh
+        localStorage.removeItem("staff_token");
+        localStorage.removeItem("staff");
+        localStorage.removeItem("auth_role");
         queryClient.clear();
         navigate("/", { replace: true });
     };
@@ -112,7 +150,7 @@ export function AppSidebar({ ...props }) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={navMain} />
+                <NavMain items={navItems} />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={user} onLogout={handleLogout} />

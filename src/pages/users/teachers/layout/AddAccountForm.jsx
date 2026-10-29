@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
@@ -44,6 +44,8 @@ import {
     CircleCheckBig,
     Copy,
     CopyCheck,
+    MapPin,
+    Phone,
 } from 'lucide-react';
 import { 
     input_class, 
@@ -51,6 +53,16 @@ import {
 } from "@/components/common/constant";
 import { CreateTeacher } from "@/services/teacherService";
 import { capitalizeWords } from "@/lib/utils";
+import {
+    getRegions,
+    getProvincesByRegion,
+    getCitiesByProvince,
+    getBarangaysByCity,
+    getRegionName,
+    getProvinceName,
+    getCityName,
+    getBarangayName,
+} from "@/data/ph-address";
 
 const required = (label) => ({ value }) => (!value ? `${label} is required` : undefined);
 
@@ -58,6 +70,9 @@ const AddAccountForm = ({ onCreated }) => {
     const [open, setOpen] = useState(false);
     const [createdData, setCreatedData] = useState(null); // holds response after success
     const [copied, setCopied] = useState(false);
+    const [regionCode, setRegionCode] = useState("");
+    const [provinceCode, setProvinceCode] = useState("");
+    const [cityCode, setCityCode] = useState("");
 
     const handleCopy = () => {
         navigator.clipboard.writeText(createdData.activation_code).then(() => {
@@ -73,6 +88,9 @@ const AddAccountForm = ({ onCreated }) => {
             setCreatedData(null);
             setCopied(false);
             form.reset();
+            setRegionCode("");
+            setProvinceCode("");
+            setCityCode("");
         }, 200);
     };
 
@@ -106,11 +124,50 @@ const AddAccountForm = ({ onCreated }) => {
             username: "",
             position: "",
             classAdvisory: "",
+            region: "",
+            province: "",
+            cityMunicipality: "",
+            barangay: "",
+            contactNumber: "",
         },
         onSubmit: async ({ value }) => {
             await createTeacherMutation.mutateAsync(value);
         },
     });
+
+    // Cascading address selection (codes drive options; names are stored in the form)
+    const regions = useMemo(() => getRegions(), []);
+    const provinces = useMemo(() => getProvincesByRegion(regionCode), [regionCode]);
+    const cities = useMemo(() => getCitiesByProvince(provinceCode), [provinceCode]);
+    const barangays = useMemo(() => getBarangaysByCity(cityCode), [cityCode]);
+
+    const handleRegionChange = (code) => {
+        setRegionCode(code);
+        setProvinceCode("");
+        setCityCode("");
+        form.setFieldValue("region", getRegionName(code));
+        form.setFieldValue("province", "");
+        form.setFieldValue("cityMunicipality", "");
+        form.setFieldValue("barangay", "");
+    };
+
+    const handleProvinceChange = (code) => {
+        setProvinceCode(code);
+        setCityCode("");
+        form.setFieldValue("province", getProvinceName(code));
+        form.setFieldValue("cityMunicipality", "");
+        form.setFieldValue("barangay", "");
+    };
+
+    const handleCityChange = (code) => {
+        setCityCode(code);
+        form.setFieldValue("cityMunicipality", getCityName(code));
+        form.setFieldValue("barangay", "");
+    };
+
+    const handleBarangayChange = (code) => {
+        form.setFieldValue("barangay", getBarangayName(code));
+    };
 
     return (
         <Dialog open={open} onOpenChange={(val) => { if (!val) handleClose(); else setOpen(true); }}>
@@ -121,7 +178,7 @@ const AddAccountForm = ({ onCreated }) => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="w-[150vw] max-w-[700px] max-h-[90vh] overflow-y-auto">
                 {createdData ? (
                     <>
                         <DialogHeader>
@@ -288,7 +345,6 @@ const AddAccountForm = ({ onCreated }) => {
                                             <Field>
                                                 <FieldLabel>Suffix</FieldLabel>
                                                 <div className="relative">
-                                                    <div className={icon_class}><UserPen className="w-4.5 h-4.5" /></div>
                                                     <Select value={field.state.value} onValueChange={field.handleChange}>
                                                         <SelectTrigger className={input_class}>
                                                             <SelectValue placeholder="Select Suffix" />
@@ -401,6 +457,185 @@ const AddAccountForm = ({ onCreated }) => {
                                         )}
                                     </form.Field>
                                 </FieldGroup>
+
+                                <FieldGroup className="grid grid-cols-2">
+                                    <form.Field name="region" validators={{ onChange: required("Region") }}>
+                                        {(field) => (
+                                            <Field>
+                                                <FieldLabel>Region</FieldLabel>
+                                                <div className="relative">
+                                                    <div className={icon_class}><MapPin className="w-4.5 h-4.5" /></div>
+                                                    <Select
+                                                        value={regionCode || undefined}
+                                                        onValueChange={handleRegionChange}
+                                                    >
+                                                        <SelectTrigger className={input_class}>
+                                                            <SelectValue placeholder="Select Region" />
+                                                        </SelectTrigger>
+                                                        <SelectContent position="popper">
+                                                            <SelectGroup>
+                                                                {regions.map((r) => (
+                                                                    <SelectItem key={r.region_code} value={r.region_code}>
+                                                                        {r.region_name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                {field.state.meta.errors.length > 0 && (
+                                                    <FieldDescription className="text-destructive">
+                                                        {field.state.meta.errors[0]}
+                                                    </FieldDescription>
+                                                )}
+                                            </Field>
+                                        )}
+                                    </form.Field>
+                                    <form.Field name="province" validators={{ onChange: required("Province / District") }}>
+                                        {(field) => (
+                                            <Field>
+                                                <FieldLabel>Province / District</FieldLabel>
+                                                <div className="relative">
+                                                    <div className={icon_class}><MapPin className="w-4.5 h-4.5" /></div>
+                                                    <Select
+                                                        value={provinceCode || undefined}
+                                                        onValueChange={handleProvinceChange}
+                                                        disabled={!regionCode}
+                                                    >
+                                                        <SelectTrigger className={input_class}>
+                                                            <SelectValue placeholder={regionCode ? "Select Province / District" : "Select Region first"} />
+                                                        </SelectTrigger>
+                                                        <SelectContent position="popper">
+                                                            <SelectGroup>
+                                                                {provinces.map((p) => (
+                                                                    <SelectItem key={p.province_code} value={p.province_code}>
+                                                                        {p.province_name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                {field.state.meta.errors.length > 0 && (
+                                                    <FieldDescription className="text-destructive">
+                                                        {field.state.meta.errors[0]}
+                                                    </FieldDescription>
+                                                )}
+                                            </Field>
+                                        )}
+                                    </form.Field>
+                                </FieldGroup>
+
+                                <FieldGroup className="grid grid-cols-2">
+                                    <form.Field name="cityMunicipality" validators={{ onChange: required("City / Municipality") }}>
+                                        {(field) => (
+                                            <Field>
+                                                <FieldLabel>City / Municipality</FieldLabel>
+                                                <div className="relative">
+                                                    <div className={icon_class}><MapPin className="w-4.5 h-4.5" /></div>
+                                                    <Select
+                                                        value={cityCode || undefined}
+                                                        onValueChange={handleCityChange}
+                                                        disabled={!provinceCode}
+                                                    >
+                                                        <SelectTrigger className={input_class}>
+                                                            <SelectValue placeholder={provinceCode ? "Select City / Municipality" : "Select Province first"} />
+                                                        </SelectTrigger>
+                                                        <SelectContent position="popper">
+                                                            <SelectGroup>
+                                                                {cities.map((c) => (
+                                                                    <SelectItem key={c.city_code} value={c.city_code}>
+                                                                        {c.city_name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                {field.state.meta.errors.length > 0 && (
+                                                    <FieldDescription className="text-destructive">
+                                                        {field.state.meta.errors[0]}
+                                                    </FieldDescription>
+                                                )}
+                                            </Field>
+                                        )}
+                                    </form.Field>
+                                    <form.Field name="barangay" validators={{ onChange: required("Barangay") }}>
+                                        {(field) => (
+                                            <Field>
+                                                <FieldLabel>Barangay</FieldLabel>
+                                                <div className="relative">
+                                                    <div className={icon_class}><MapPin className="w-4.5 h-4.5" /></div>
+                                                    <Select
+                                                        value={
+                                                            // derive selected code from name for controlled display
+                                                            barangays.find((b) => b.brgy_name === field.state.value)?.brgy_code || undefined
+                                                        }
+                                                        onValueChange={handleBarangayChange}
+                                                        disabled={!cityCode}
+                                                    >
+                                                        <SelectTrigger className={input_class}>
+                                                            <SelectValue placeholder={cityCode ? "Select Barangay" : "Select City first"} />
+                                                        </SelectTrigger>
+                                                        <SelectContent position="popper">
+                                                            <SelectGroup>
+                                                                {barangays.map((b) => (
+                                                                    <SelectItem key={b.brgy_code} value={b.brgy_code}>
+                                                                        {b.brgy_name}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                {field.state.meta.errors.length > 0 && (
+                                                    <FieldDescription className="text-destructive">
+                                                        {field.state.meta.errors[0]}
+                                                    </FieldDescription>
+                                                )}
+                                            </Field>
+                                        )}
+                                    </form.Field>
+                                </FieldGroup>
+
+<form.Field
+                                    name="contactNumber"
+                                    validators={{
+                                        onChange: ({ value }) => {
+                                            if (!value) return "Contact number is required";
+                                            if (!/^[\d\s\+\-\(\)]+$/.test(value)) {
+                                                return "Contact number may only contain digits, spaces, +, -, and parentheses";
+                                            }
+                                            if (value.replace(/\D/g, "").length < 7) {
+                                                return "Contact number must have at least 7 digits";
+                                            }
+                                            return undefined;
+                                        },
+                                    }}
+                                >
+                                    {(field) => (
+                                        <Field>
+                                            <FieldLabel>Contact Number</FieldLabel>
+                                            <InputGroup>
+                                                <InputGroupInput
+                                                    placeholder="09XXXXXXXXX"
+                                                    type="tel"
+                                                    inputMode="tel"
+                                                    autoComplete="tel"
+                                                    value={field.state.value}
+                                                    onChange={(e) => field.handleChange(e.target.value)}
+                                                    onBlur={field.handleBlur}
+                                                />
+                                                <InputGroupAddon><Phone /></InputGroupAddon>
+                                            </InputGroup>
+                                            {field.state.meta.errors.length > 0 && (
+                                                <FieldDescription className="text-destructive">
+                                                    {field.state.meta.errors[0]}
+                                                </FieldDescription>
+                                            )}
+                                        </Field>
+                                    )}
+                                </form.Field>
                             </FieldGroup>
 
                             <DialogFooter className="mt-4">

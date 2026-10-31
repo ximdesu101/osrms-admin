@@ -11,7 +11,7 @@ import {
     CircleCheck, 
     FileStack, 
     RotateCcw, 
-    Loader2,
+    Loader,
 } from "lucide-react";
 import { GetDocumentSubmissionMetrics } from "@/services/documentSubmissionService";
 
@@ -43,7 +43,7 @@ const CardMetrics = () => {
                             </CardHeader>
                             <CardContent>
                                 {isLoading ? (
-                                    <Loader2 className="h-7 w-7 animate-spin text-muted-foreground" />
+                                    <Loader className="h-7 w-7 animate-spin text-muted-foreground" />
                                 ) : (
                                     <h1 className="text-3xl font-bold tracking-tight">
                                         {card.value}

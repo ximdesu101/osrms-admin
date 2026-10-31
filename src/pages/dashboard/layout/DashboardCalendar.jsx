@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
     Dialog,
     DialogContent,
@@ -16,7 +17,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import {
     CalendarDays,
     ExternalLink,
@@ -36,7 +36,6 @@ import {
 
 import { GetCalendarEvents } from "@/services/dashboardService";
 
-/* ─── localStorage key for dismissed events ───────────────── */
 const DISMISSED_KEY = "dashboard_dismissed_calendar_events";
 
 function loadDismissed() {
@@ -50,8 +49,6 @@ function loadDismissed() {
 function saveDismissed(set) {
     localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
 }
-
-/* ─── Type helpers (incoming = teacher→admin, outgoing = admin→teacher) ─ */
 
 function getTypeStyle(type) {
     if (type === "incoming") {
@@ -73,8 +70,6 @@ function getTypeStyle(type) {
         Icon: ArrowUpFromLine,
     };
 }
-
-/* ─── Status badge helpers (for dialog + popover) ─────────── */
 
 function getStatusBadgeClass(status) {
     switch (status) {
@@ -106,8 +101,6 @@ function getStatusIcon(status) {
         default:             return FileText;
     }
 }
-
-/* ─── Hover popover content ────────────────────────────────── */
 
 function EventPopoverContent({ event }) {
     const typeStyle = getTypeStyle(event.type);
@@ -169,8 +162,6 @@ function PopoverRow({ icon: Icon, label, highlight = false }) {
         </div>
     );
 }
-
-/* ─── Calendar event bar ───────────────────────────────────── */
 
 function EventBar({ event, onSelect, onDismiss }) {
     const { bg, text } = getTypeStyle(event.type);
@@ -245,8 +236,6 @@ function EventBar({ event, onSelect, onDismiss }) {
     );
 }
 
-/* ─── Dismiss confirmation dialog ─────────────────────────── */
-
 function DismissConfirmDialog({ event, onConfirm, onCancel }) {
     if (!event) return null;
     return (
@@ -271,8 +260,6 @@ function DismissConfirmDialog({ event, onConfirm, onCancel }) {
         </Dialog>
     );
 }
-
-/* ─── Request detail dialog ────────────────────────────────── */
 
 function RequestDetailDialog({ event, open, onClose }) {
     const navigate = useNavigate();
@@ -387,7 +374,6 @@ function DetailRow({ icon: Icon, label, value, highlight = false }) {
     );
 }
 
-/* ─── Calendar day button ──────────────────────────────────── */
 
 function buildDayButtonComponent(eventsByDate, onEventSelect, onDismissRequest) {
     return function CustomDayButton({ day, modifiers, ...props }) {
@@ -450,8 +436,6 @@ function buildDayButtonComponent(eventsByDate, onEventSelect, onDismissRequest) 
         );
     };
 }
-
-/* ─── Main component ───────────────────────────────────────── */
 
 const DashboardCalendar = () => {
     const [selectedDate,   setSelectedDate]   = React.useState(new Date());
@@ -539,8 +523,8 @@ const DashboardCalendar = () => {
         <div className="space-y-2">
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                <Button variant="outline" size="sm" onClick={handleToday}>
-                    Today
+                <Button variant="outline" className="bg-white" size="sm" onClick={handleToday}>
+                    Today's date
                 </Button>
 
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
@@ -562,7 +546,7 @@ const DashboardCalendar = () => {
                 month={displayMonth}
                 onMonthChange={setDisplayMonth}
                 className="
-                    w-full border rounded-lg
+                    w-full bg-white border rounded-lg
                     [&_table]:w-full [&_table]:border-collapse
                     [&_tbody]:border-spacing-0 [&_tbody_tr]:m-0
                     [&_td]:p-0 [&_th]:p-0

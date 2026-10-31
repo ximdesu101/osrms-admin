@@ -235,7 +235,7 @@ const Reports = () => {
             bg: "bg-amber-50 dark:bg-amber-950/40",
         },
         {
-            title: "Completed Requests",
+            title: "Completed",
             value: metrics?.document_requests?.fulfilled ?? 0,
             sub: "Fulfilled",
             icon: CheckCircle2,
@@ -270,11 +270,6 @@ const Reports = () => {
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Reports & Analytics</h1>
-                    <p className="text-muted-foreground text-sm mt-1 max-w-2xl">
-                        Overview of school records, accounts, document requests, and system activity.
-                        Filter by period and export detailed reports in PDF, Word, or Excel.
-                    </p>
                     <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
                         <span>Period: <strong className="text-foreground">{periodLabel}</strong></span>

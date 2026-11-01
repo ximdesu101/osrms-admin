@@ -94,6 +94,7 @@ const administrativeForms = [
     { value: "so", label: "Special Order" },
     { value: "snsed", label: "National Simulation Earthquake Drill" },
     { value: "transmittal", label: "Transmittal" },
+    { value: "sbfp", label: "SBFP – School-Based Feeding Program" },
 ];
 
 const allDocuments = [...schoolForms, ...administrativeForms];

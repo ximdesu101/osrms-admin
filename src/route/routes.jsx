@@ -26,6 +26,7 @@ import AdminLF from "@/pages/forms/administrative-forms/layout/lf/lf";
 import AdminSO from "@/pages/forms/administrative-forms/layout/so/so";
 import AdminSNSED from "@/pages/forms/administrative-forms/layout/snsed/snsed";
 import AdminTransmittal from "@/pages/forms/administrative-forms/layout/transmittal/transmittal";
+import AdminSBFP from "@/pages/forms/administrative-forms/layout/sbfp/sbfp";
 import SubmissionRequests from "@/pages/submission/submission-request/SubmissionRequest";
 import AddRequestForm from "@/pages/submission/submission-request/layout/AddRequestForm";
 import SubmissionApprovals from "@/pages/submission/submission-approval/SubmissionApproval";
@@ -78,6 +79,7 @@ export const router = createBrowserRouter([
                     { path: "admin-forms/so", element: <AdminSO />, handle: { crumb: () => "Special Order" } },
                     { path: "admin-forms/snsed", element: <AdminSNSED />, handle: { crumb: () => "NSED" } },
                     { path: "admin-forms/transmittal", element: <AdminTransmittal />, handle: { crumb: () => "Transmittal" } },
+                    { path: "admin-forms/sbfp", element: <AdminSBFP />, handle: { crumb: () => "SBFP – School-Based Feeding Program" } },
                     { path: "submission-requests", element: <SubmissionRequests />, handle: { crumb: () => "Submission Requests" } },
                     {
                         path: "submission-requests/create",

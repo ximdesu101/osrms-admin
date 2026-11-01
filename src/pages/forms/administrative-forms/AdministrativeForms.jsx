@@ -21,6 +21,7 @@ import {
     FileText,
     Megaphone,
     Send,
+    Apple,
 } from "lucide-react";
 import { GetAdminFormsSummary } from "@/services/templateService";
 
@@ -88,6 +89,14 @@ const ADMINISTRATIVE_FORMS = [
         name: "DepED Partnership Database System",
         description:
             "Records and manages school partnerships and stakeholder contributions.",
+    },
+    {
+        code: "SBFP",
+        path: "sbfp",
+        icon: Apple,
+        name: "SBFP – School-Based Feeding Program",
+        description:
+            "School-Based Feeding Program documentation, beneficiary records, and related reports.",
     },
 ];
 

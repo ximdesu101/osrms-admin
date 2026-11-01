@@ -161,7 +161,7 @@ const AuditLogs = () => {
                         <SelectTrigger className="h-9 w-[180px] text-sm">
                             <SelectValue placeholder="All Categories" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent position="popper">
                             {CATEGORIES.map((cat) => (
                                 <SelectItem key={cat} value={cat}>
                                     {cat === "All" ? "All Categories" : cat}
@@ -175,7 +175,7 @@ const AuditLogs = () => {
                         <SelectTrigger className="h-9 w-[140px] text-sm">
                             <SelectValue placeholder="All Statuses" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent position="popper">
                             <SelectItem value="All">All Statuses</SelectItem>
                             <SelectItem value="success">Success</SelectItem>
                             <SelectItem value="failed">Failed</SelectItem>

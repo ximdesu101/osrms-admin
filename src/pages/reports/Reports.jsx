@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
     Card,
     CardContent,
@@ -33,6 +34,14 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput,
+    InputGroupText,
+    InputGroupTextarea,
+} from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -295,74 +304,78 @@ const Reports = () => {
             {/* Filters */}
             <Card>
                 <CardContent className="pt-4">
-                    <div className="flex flex-wrap gap-3 items-end">
-                        <div className="space-y-1.5">
-                            <Label className="text-xs">Reporting Period</Label>
-                            <Select value={preset} onValueChange={(v) => { setPreset(v); setPage(1); }}>
-                                <SelectTrigger className="w-[160px]">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {(meta?.presets || []).map((p) => (
-                                        <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        {preset === "custom" && (
-                            <>
-                                <div className="space-y-1.5">
-                                    <Label className="text-xs">From</Label>
-                                    <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-[150px]" />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-xs">To</Label>
-                                    <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-[150px]" />
-                                </div>
-                            </>
-                        )}
-                        <div className="space-y-1.5">
-                            <Label className="text-xs">Report Category</Label>
-                            <Select value={reportType} onValueChange={(v) => { setReportType(v); setPage(1); setStatusFilter("All"); }}>
-                                <SelectTrigger className="w-[220px]">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {(meta?.report_types || [])
-                                        .filter((t) => t.id !== "summary")
-                                        .map((t) => (
-                                            <SelectItem key={t.id} value={t.id}>{t.label}</SelectItem>
-                                        ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        {(reportType === "document_requests" || reportType === "pending_unavailable") && (
+                    <div className="flex flex-wrap gap-3 justify-between">
+                        <div className="flex gap-2">
                             <div className="space-y-1.5">
-                                <Label className="text-xs">Status</Label>
-                                <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
-                                    <SelectTrigger className="w-[150px]">
+                                <Label className="text-xs">Reporting Period</Label>
+                                <Select value={preset} onValueChange={(v) => { setPreset(v); setPage(1); }}>
+                                    <SelectTrigger className="w-[160px]">
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="All">All</SelectItem>
-                                        {(meta?.document_statuses || []).map((s) => (
-                                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                                    <SelectContent position="popper">
+                                        {(meta?.presets || []).map((p) => (
+                                            <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
-                        )}
-                        <div className="space-y-1.5 flex-1 min-w-[180px]">
+                            {preset === "custom" && (
+                                <>
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs">From</Label>
+                                        <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="w-[150px]" />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <Label className="text-xs">To</Label>
+                                        <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="w-[150px]" />
+                                    </div>
+                                </>
+                            )}
+                            <div className="space-y-1.5">
+                                <Label className="text-xs">Report Category</Label>
+                                <Select value={reportType} onValueChange={(v) => { setReportType(v); setPage(1); setStatusFilter("All"); }}>
+                                    <SelectTrigger className="w-[250px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper">
+                                        {(meta?.report_types || [])
+                                            .filter((t) => t.id !== "summary")
+                                            .map((t) => (
+                                                <SelectItem key={t.id} value={t.id}>{t.label}</SelectItem>
+                                            ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            {(reportType === "document_requests" || reportType === "pending_unavailable") && (
+                                <div className="space-y-1.5">
+                                    <Label className="text-xs">Status</Label>
+                                    <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
+                                        <SelectTrigger className="w-[150px]">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent position="popper">
+                                            <SelectItem value="All">All</SelectItem>
+                                            {(meta?.document_statuses || []).map((s) => (
+                                                <SelectItem key={s} value={s}>{s}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
+                        </div>
+                        <div className="space-y-1.5">
                             <Label className="text-xs">Search</Label>
-                            <div className="relative">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input
+                            <InputGroup>
+                                <InputGroupInput
                                     placeholder="Search…"
                                     value={search}
-                                    onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                                    className="pl-8"
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                        setPage(1);
+                                    }}
                                 />
-                            </div>
+                                <InputGroupAddon><Search /></InputGroupAddon>
+                            </InputGroup>
                         </div>
                     </div>
                 </CardContent>
@@ -372,28 +385,28 @@ const Reports = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                 {analyticsLoading
                     ? Array.from({ length: 6 }).map((_, i) => (
-                          <Card key={i} className="p-4">
-                              <Skeleton className="h-4 w-20 mb-2" />
-                              <Skeleton className="h-8 w-12" />
-                          </Card>
-                      ))
+                        <Card key={i} className="p-4">
+                            <Skeleton className="h-4 w-20 mb-2" />
+                            <Skeleton className="h-8 w-12" />
+                        </Card>
+                    ))
                     : summaryCards.map((card) => {
-                          const Icon = card.icon;
-                          return (
-                              <Card key={card.title} className="p-4">
-                                  <div className="flex items-start justify-between">
-                                      <div>
-                                          <p className="text-xs text-muted-foreground font-medium">{card.title}</p>
-                                          <p className="text-2xl font-bold mt-1 tabular-nums">{card.value}</p>
-                                          <p className="text-xs text-muted-foreground mt-0.5">{card.sub}</p>
-                                      </div>
-                                      <div className={`rounded-lg p-2 ${card.bg}`}>
-                                          <Icon className={`h-4 w-4 ${card.color}`} />
-                                      </div>
-                                  </div>
-                              </Card>
-                          );
-                      })}
+                        const Icon = card.icon;
+                        return (
+                            <Card key={card.title} className="p-4">
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <p className="text-xs text-muted-foreground font-medium">{card.title}</p>
+                                        <p className="text-2xl font-bold mt-1 tabular-nums">{card.value}</p>
+                                        <p className="text-xs text-muted-foreground mt-0.5">{card.sub}</p>
+                                    </div>
+                                    <div className={`rounded-lg p-2 ${card.bg}`}>
+                                        <Icon className={`h-4 w-4 ${card.color}`} />
+                                    </div>
+                                </div>
+                            </Card>
+                        );
+                    })}
             </div>
 
             {/* Charts */}
@@ -620,11 +633,10 @@ const Reports = () => {
                                         key={f.id}
                                         type="button"
                                         onClick={() => setExportFormat(f.id)}
-                                        className={`flex items-start gap-3 rounded-lg border p-3 text-left transition-colors ${
-                                            exportFormat === f.id
-                                                ? "border-primary bg-primary/5"
-                                                : "hover:bg-muted/50"
-                                        }`}
+                                        className={`flex items-start gap-3 rounded-lg border p-3 text-left transition-colors ${exportFormat === f.id
+                                            ? "border-primary bg-primary/5"
+                                            : "hover:bg-muted/50"
+                                            }`}
                                     >
                                         <div className="mt-0.5 h-4 w-4 rounded-full border flex items-center justify-center">
                                             {exportFormat === f.id && (

@@ -30,7 +30,8 @@ import {
 } from "lucide-react";
 import AddAccountForm from "./AddAccountForm";
 import EditAccountForm from "./EditAccountForm";
-import DeleteAccount from "./DeleteAccount";
+import ToggleAccountStatus from "./ToggleAccountStatus";
+import ViewProfile from "./ViewProfile";
 import CardMetrics from "./CardMetrics";
 import { GetTeachers } from "@/services/teacherService";
 
@@ -123,8 +124,9 @@ const TeacherAccount = () => {
                                             {new Date(teacher.created_at).toLocaleDateString()}
                                         </TableCell>
                                         <TableCell className="text-right">
+                                            <ViewProfile teacher={teacher} />
                                             <EditAccountForm teacher={teacher} />
-                                            <DeleteAccount teacher={teacher} />
+                                            <ToggleAccountStatus teacher={teacher} />
                                         </TableCell>
                                     </TableRow>
                                 ))

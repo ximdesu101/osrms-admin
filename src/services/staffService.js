@@ -17,8 +17,18 @@ export const GetStaffMetrics = async () => {
     return response.data;
 };
 
+export const GetStaff = async (id) => {
+    const response = await api.get(`/admin/staffs/${id}`);
+    return response.data;
+};
+
 export const UpdateStaff = async ({ id, ...payload }) => {
     const response = await api.put(`/admin/staffs/${id}`, payload);
+    return response.data;
+};
+
+export const ToggleStaffStatus = async (id) => {
+    const response = await api.patch(`/admin/staffs/${id}/toggle-status`);
     return response.data;
 };
 

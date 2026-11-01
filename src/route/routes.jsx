@@ -7,6 +7,7 @@ import Sidebar from "@/layouts/sidebar/Sidebar";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import TeacherAccount from "@/pages/users/teachers/TeacherAccount";
 import StaffAccount from "@/pages/users/staff/StaffAccount";
+import StaffProfile from "@/pages/profile/StaffProfile";
 import Forms from "@/pages/forms/Forms";
 import SF1 from "@/pages/forms/school-forms/layouts/sf1/SF1";
 import SF2 from "@/pages/forms/school-forms/layouts/sf2/SF2";
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
                     { path: "dashboard", element: <Dashboard />, handle: { crumb: () => "Dashboard" } },
                     { path: "teacher-account", element: <TeacherAccount />, handle: { crumb: () => "Teacher Account" } },
                     { path: "staff-account", element: <StaffAccount />, handle: { crumb: () => "Staff Account" } },
+                    { path: "profile", element: <StaffProfile />, handle: { crumb: () => "My Profile" } },
                     { path: "forms", element: <Forms />, handle: { crumb: () => "School Forms" } },
                     { path: "school-forms/sf1", element: <SF1 />, handle: { crumb: () => "School Register" } },
                     { path: "school-forms/sf2", element: <SF2 />, handle: { crumb: () => "SF2 – Daily Attendance" } },

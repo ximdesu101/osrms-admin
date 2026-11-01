@@ -25,6 +25,7 @@ import {
     Bell,
     ChartNoAxesCombined,
     Logs,
+    UserRound,
 } from "lucide-react";
 import { AdminLogout, StaffLogout } from "@/services/AuthService";
 
@@ -59,6 +60,7 @@ const adminNavMain = [
 // Staff: same operational pages, without Admin-exclusive items
 const staffNavMain = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    { title: "My Profile", url: "/profile", icon: UserRound },
     { title: "Forms", url: "/forms", icon: FileText },
     { title: "Document Requests", url: "/document-requests", icon: FilePlusCorner },
     {
@@ -153,7 +155,7 @@ export function AppSidebar({ ...props }) {
                 <NavMain items={navItems} />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={user} onLogout={handleLogout} />
+                <NavUser user={user} onLogout={handleLogout} showProfile={role === "staff"} />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

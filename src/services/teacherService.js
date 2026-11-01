@@ -17,8 +17,18 @@ export const GetTeacherMetrics = async () => {
     return response.data;
 };
 
+export const GetTeacher = async (id) => {
+    const response = await api.get(`/admin/teachers/${id}`);
+    return response.data;
+};
+
 export const UpdateTeacher = async ({ id, ...payload }) => {
     const response = await api.put(`/admin/teachers/${id}`, payload);
+    return response.data;
+};
+
+export const ToggleTeacherStatus = async (id) => {
+    const response = await api.patch(`/admin/teachers/${id}/toggle-status`);
     return response.data;
 };
 

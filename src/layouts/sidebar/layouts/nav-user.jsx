@@ -1,6 +1,7 @@
 "use client"
 
-import { LogOut, ChevronsUpDown } from "lucide-react"
+import { LogOut, ChevronsUpDown, UserRound } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import {
     Avatar,
     AvatarFallback,
@@ -21,8 +22,9 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavUser({ user, onLogout }) {
+export function NavUser({ user, onLogout, showProfile = false }) {
     const { isMobile } = useSidebar()
+    const navigate = useNavigate()
 
     // Generate initials from the display name
     const initials = (user.name || "A")
@@ -73,6 +75,16 @@ export function NavUser({ user, onLogout }) {
                         </DropdownMenuLabel>
 
                         <DropdownMenuSeparator />
+
+                        {showProfile && (
+                            <DropdownMenuItem
+                                className="cursor-pointer"
+                                onClick={() => navigate("/profile")}
+                            >
+                                <UserRound className="mr-2 h-4 w-4" />
+                                My Profile
+                            </DropdownMenuItem>
+                        )}
 
                         <DropdownMenuItem
                             className="text-destructive focus:text-destructive cursor-pointer"

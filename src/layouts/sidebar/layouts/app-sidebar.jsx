@@ -95,11 +95,13 @@ export function AppSidebar({ ...props }) {
 
     const user = React.useMemo(() => {
         if (role === "staff") {
-            const fullName = [stored.first_name, stored.last_name].filter(Boolean).join(" ") || "Staff";
+            const fullName = [stored.first_name, stored.middle_name, stored.last_name, stored.suffix]
+                .filter(Boolean)
+                .join(" ") || "Staff";
             return {
                 name: fullName,
                 username: stored.username ?? "staff",
-                avatar: "",
+                avatar: stored.profile_picture ?? "",
             };
         }
         return {

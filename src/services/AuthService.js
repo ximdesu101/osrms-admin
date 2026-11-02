@@ -73,3 +73,23 @@ export const UnifiedLogin = async (credentials) => {
         }
     }
 };
+
+export const StaffUpdateProfile = async (payload) => {
+    const response = await api.put("/staff/profile", payload);
+    return response.data;
+};
+
+export const StaffUploadAvatar = async (file) => {
+    const formData = new FormData();
+    formData.append("avatar", file);
+    const response = await api.post("/staff/profile/avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+};
+
+export const StaffRemoveAvatar = async () => {
+    const response = await api.delete("/staff/profile/avatar");
+    return response.data;
+};
+

@@ -378,7 +378,7 @@ const SharedTable = ({
                                                         onClick={() => handleDownload(doc)}
                                                     >
                                                         {downloadingId === doc.id ? (
-                                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                                            <Loader className="h-4 w-4 animate-spin" />
                                                         ) : (
                                                             <Download className="h-4 w-4" />
                                                         )}
@@ -551,7 +551,7 @@ const SharedTable = ({
                                                         >
                                                             {(activatingId === t.id ||
                                                                 deletingId === t.id) ? (
-                                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                                <Loader className="h-4 w-4 animate-spin" />
                                                             ) : (
                                                                 <MoreHorizontal className="h-4 w-4" />
                                                             )}
@@ -634,7 +634,7 @@ const SharedTable = ({
                         >
                             {deletingId ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    <Loader className="mr-2 h-4 w-4 animate-spin" />
                                     Deleting…
                                 </>
                             ) : (

@@ -1,12 +1,36 @@
 import api from "@/lib/axios";
+import { GetSubmissionRequests } from "@/services/submissionRequestService";
 
 /**
- * Fetch aggregated dashboard metrics:
- *   { teachers, submissions, documents }
+ * Fetch aggregated dashboard metrics for submission requests:
+ *   { complete, pending, missing, overdue }
  */
 export const GetDashboardMetrics = async () => {
-    const response = await api.get("/admin/dashboard/metrics");
-    return response.data;
+    const [completedRes, requestedRes, acknowledgedRes, overdueRes, needsRevRes, awaitingRes, cancelledRes] =
+        await Promise.all([
+            GetSubmissionRequests({ page: 1, status: "Completed" }),
+            GetSubmissionRequests({ page: 1, status: "Requested" }),
+            GetSubmissionRequests({ page: 1, status: "Acknowledged" }),
+            GetSubmissionRequests({ page: 1, status: "Overdue" }),
+            GetSubmissionRequests({ page: 1, status: "Needs Revision" }),
+            GetSubmissionRequests({ page: 1, status: "Awaiting Approval" }),
+            GetSubmissionRequests({ page: 1, status: "Cancelled" }),
+        ]);
+
+    const total = (res) => res?.total ?? res?.data?.length ?? 0;
+
+    const pending =
+        total(requestedRes) +
+        total(acknowledgedRes) +
+        total(needsRevRes) +
+        total(awaitingRes);
+
+    return {
+        complete: total(completedRes),
+        pending,
+        missing: total(cancelledRes),
+        overdue: total(overdueRes),
+    };
 };
 
 /**

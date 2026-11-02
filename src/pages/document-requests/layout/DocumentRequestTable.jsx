@@ -384,7 +384,7 @@ const DocumentRequestTable = () => {
                                         Fulfilled Document
                                     </p>
                                     <div className="flex items-center justify-between gap-2">
-                                        <p className="font-medium truncate">{detail.file.original_name}</p>
+                                        <p className="font-medium">{detail.file.original_name}</p>
                                         <Button size="sm" variant="outline" asChild>
                                             <a href={DownloadDocumentRequest(detail.id)} download={detail.file.original_name} target="_blank" rel="noreferrer">
                                                 <Download className="h-4 w-4" />

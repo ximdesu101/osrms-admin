@@ -12,7 +12,7 @@ import {
     Upload,
     Scaling,
     BadgeCheck,
-    Loader2,
+    Loader,
 } from "lucide-react";
 import { toast } from "sonner";
 import SharedPreview from "./SharedPreview";
@@ -164,7 +164,7 @@ const SharedTemplates = ({
                         disabled={uploading || loading}
                     >
                         {uploading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader className="h-4 w-4 animate-spin" />
                         ) : (
                             <Upload className="h-4 w-4" />
                         )}

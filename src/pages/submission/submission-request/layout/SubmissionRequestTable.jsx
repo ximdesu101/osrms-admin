@@ -56,6 +56,7 @@ import {
     GetSubmissionRequests,
     CancelSubmissionRequest,
 } from "@/services/submissionRequestService";
+import SubmissionRequestDetailDialog from "./SubmissionRequestDetailDialog";
 
 const statusVariant = {
     Draft: "outline",
@@ -89,6 +90,7 @@ const SubmissionRequestTable = () => {
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("All");
     const [page, setPage] = useState(1);
+    const [selectedId, setSelectedId] = useState(null);
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError } = useQuery({
@@ -128,6 +130,7 @@ const SubmissionRequestTable = () => {
     };
 
     return (
+        <>
         <div className="grid gap-2">
             {/* Tabs and Search */}
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -263,6 +266,7 @@ const SubmissionRequestTable = () => {
                                                 variant="ghost"
                                                 size="icon"
                                                 title="View Submission Request"
+                                                onClick={() => setSelectedId(request.id)}
                                             >
                                                 <Eye />
                                             </Button>
@@ -338,6 +342,13 @@ const SubmissionRequestTable = () => {
                 </div>
             </div>
         </div>
+
+        {/* Detail dialog */}
+        <SubmissionRequestDetailDialog
+            requestId={selectedId}
+            onClose={() => setSelectedId(null)}
+        />
+        </>
     );
 };
 

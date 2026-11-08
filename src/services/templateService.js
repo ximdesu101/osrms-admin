@@ -116,3 +116,53 @@ export const GetAdminFormsSummary = async () => {
     const response = await api.get("/admin/admin-forms/summary");
     return response.data;
 };
+
+// ── Dynamic Form Card CRUD ────────────────────────────────────────────────────
+
+/**
+ * List all dynamic form cards, optionally filtered by category.
+ * @param {'school_forms'|'admin_forms'|undefined} category
+ */
+export const GetFormCards = async (category) => {
+    const params = category ? { category } : {};
+    const response = await api.get("/admin/form-cards", { params });
+    return response.data.form_cards ?? [];
+};
+
+/**
+ * Create a new dynamic form card.
+ * @param {{ code: string, name: string, description?: string, icon_name?: string, category: string }} payload
+ */
+export const CreateFormCard = async (payload) => {
+    const response = await api.post("/admin/form-cards", payload);
+    return response.data;
+};
+
+/**
+ * Update an existing form card.
+ * @param {number} id
+ * @param {{ code?: string, name?: string, description?: string, icon_name?: string, category?: string }} payload
+ */
+export const UpdateFormCard = async (id, payload) => {
+    const response = await api.put(`/admin/form-cards/${id}`, payload);
+    return response.data;
+};
+
+/**
+ * Check whether a form card can be deleted (0 files and 0 templates).
+ * Returns { can_delete: boolean, file_count: number, template_count: number }
+ * @param {number} id
+ */
+export const CheckFormCardDeletion = async (id) => {
+    const response = await api.get(`/admin/form-cards/${id}/deletion-check`);
+    return response.data;
+};
+
+/**
+ * Delete a form card by id.
+ * @param {number} id
+ */
+export const DeleteFormCard = async (id) => {
+    const response = await api.delete(`/admin/form-cards/${id}`);
+    return response.data;
+};

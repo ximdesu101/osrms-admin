@@ -52,7 +52,6 @@ import {
     User,
     Hash,
     CalendarDays,
-    Download,
     AlertCircle,
     RefreshCw,
     Clock,
@@ -165,21 +164,20 @@ const SubmissionApprovalTable = () => {
     const canReview = detail &&
         ["Submitted", "Under Review", "Resubmitted"].includes(detail.status);
 
-    const handleDownload = async () => {
+    const handleView = async () => {
         if (!detail) return;
         setDownloading(true);
         try {
             const response = await DownloadDocumentSubmission(detail.id);
-            const url = URL.createObjectURL(new Blob([response.data]));
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = detail.original_name || `submission-${detail.submission_code}`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
+            const blob = new Blob([response.data], {
+                type: response.headers["content-type"] || "application/octet-stream",
+            });
+            const url = URL.createObjectURL(blob);
+            window.open(url, "_blank", "noopener,noreferrer");
+            // Revoke after a short delay so the new tab has time to load it
+            setTimeout(() => URL.revokeObjectURL(url), 10_000);
         } catch {
-            toast.error("Failed to download file. Please try again.");
+            toast.error("Failed to open file. Please try again.");
         } finally {
             setDownloading(false);
         }
@@ -327,7 +325,7 @@ const SubmissionApprovalTable = () => {
 
             {/* ── Review / View Dialog ──────────────────────────────────── */}
             <Dialog open={!!reviewId && !revisionOpen} onOpenChange={(open) => !open && closeDialog()}>
-                <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                <DialogContent className="sm:max-w-3xl max-h-[90vh]">
                     <DialogHeader>
                         <DialogTitle>
                             {canReview ? "Review Submission" : "Submission Details"}
@@ -399,11 +397,24 @@ const SubmissionApprovalTable = () => {
                                     </p>
                                     <div className="flex items-center justify-between gap-3">
                                         <div className="min-w-0">
-                                            <p className="font-medium truncate">{detail.original_name}</p>
+                                            <button
+                                                type="button"
+                                                disabled={downloading}
+                                                onClick={handleView}
+                                                className="font-medium text-left truncate text-blue-600 hover:text-blue-800 hover:underline underline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                                                title="Click to view document"
+                                            >
+                                                {downloading
+                                                    ? <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+                                                    : <Eye className="h-3.5 w-3.5 shrink-0" />
+                                                }
+                                                {detail.original_name}
+                                            </button>
                                             {detail.formatted_size && (
-                                                <p className="text-xs text-muted-foreground">{detail.formatted_size}</p>
+                                                <p className="text-xs text-muted-foreground mt-0.5">{detail.formatted_size}</p>
                                             )}
                                         </div>
+
                                     </div>
                                 </div>
                             ) : (

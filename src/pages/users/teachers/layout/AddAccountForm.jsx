@@ -301,7 +301,7 @@ const AddAccountForm = ({ onCreated }) => {
                                     <form.Field name="middleName">
                                         {(field) => (
                                             <Field>
-                                                <FieldLabel>Middle Name</FieldLabel>
+                                                <FieldLabel>Middle Name<span>(Optional)</span></FieldLabel>
                                                 <InputGroup>
                                                     <InputGroupInput
                                                         placeholder="Ted (Optional)"
@@ -351,7 +351,7 @@ const AddAccountForm = ({ onCreated }) => {
                                                         </SelectTrigger>
                                                         <SelectContent position="popper">
                                                             <SelectGroup>
-                                                                <SelectItem value="none">None</SelectItem>
+                                                                <SelectItem value="none">N/A</SelectItem>
                                                                 <SelectItem value="Jr.">Jr.</SelectItem>
                                                                 <SelectItem value="Sr.">Sr.</SelectItem>
                                                                 <SelectItem value="II">II</SelectItem>

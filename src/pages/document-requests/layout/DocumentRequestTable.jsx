@@ -58,7 +58,6 @@ import {
     GetDocumentRequests,
     GetDocumentRequest,
     AcknowledgeDocumentRequest,
-    MarkDocumentRequestProcessing,
     FulfillDocumentRequest,
     MarkDocumentRequestUnavailable,
     DownloadDocumentRequest,
@@ -140,12 +139,6 @@ const DocumentRequestTable = () => {
         mutationFn: AcknowledgeDocumentRequest,
         onSuccess: (res) => { toast.success(res?.message || "Request acknowledged."); invalidate(); },
         onError: (err) => toast.error(err.response?.data?.message || "Failed to acknowledge."),
-    });
-
-    const processingMutation = useMutation({
-        mutationFn: MarkDocumentRequestProcessing,
-        onSuccess: (res) => { toast.success(res?.message || "Marked as processing."); invalidate(); },
-        onError: (err) => toast.error(err.response?.data?.message || "Failed to update status."),
     });
 
     const fulfillMutation = useMutation({
@@ -410,33 +403,26 @@ const DocumentRequestTable = () => {
                                     Acknowledge
                                 </Button>
                             )}
-                            {(detail.status === "Pending" || detail.status === "Acknowledged") && (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    disabled={processingMutation.isPending}
-                                    onClick={() => processingMutation.mutate(detail.id)}
-                                >
-                                    {processingMutation.isPending && <Loader2 className="animate-spin" />}
-                                    Mark Processing
-                                </Button>
+                            {detail.status !== "Pending" && (
+                                <>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
+                                        onClick={() => setUnavailableOpen(true)}
+                                    >
+                                        <AlertCircle className="h-4 w-4" />
+                                        Mark Unavailable
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        onClick={() => setFulfillOpen(true)}
+                                    >
+                                        <Upload className="h-4 w-4" />
+                                        Fulfill Request
+                                    </Button>
+                                </>
                             )}
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
-                                onClick={() => setUnavailableOpen(true)}
-                            >
-                                <AlertCircle className="h-4 w-4" />
-                                Mark Unavailable
-                            </Button>
-                            <Button
-                                size="sm"
-                                onClick={() => setFulfillOpen(true)}
-                            >
-                                <Upload className="h-4 w-4" />
-                                Fulfill Request
-                            </Button>
                         </DialogFooter>
                     )}
                 </DialogContent>

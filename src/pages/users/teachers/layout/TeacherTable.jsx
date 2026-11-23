@@ -85,7 +85,6 @@ const TeacherAccount = () => {
                                 <TableHead className="text-white">First Name</TableHead>
                                 <TableHead className="text-white">Middle Name</TableHead>
                                 <TableHead className="text-white">Last Name</TableHead>
-                                <TableHead className="text-white">Suffix</TableHead>
                                 <TableHead className="text-white">Username</TableHead>
                                 <TableHead className="text-white">Position</TableHead>
                                 <TableHead className="text-white">Status</TableHead>
@@ -97,14 +96,14 @@ const TeacherAccount = () => {
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={10} className="text-center text-muted-foreground">
+                                    <TableCell colSpan={9} className="text-center text-muted-foreground">
                                         <Loader className="mx-auto animate-spin" />
                                         Loading teacher accounts...
                                     </TableCell>
                                 </TableRow>
                             ) : isError ? (
                                 <TableRow>
-                                    <TableCell colSpan={10} className="text-center text-destructive">
+                                    <TableCell colSpan={9} className="text-center text-destructive">
                                         <DatabaseX className="mx-auto" />
                                         Failed to load teacher accounts.
                                     </TableCell>
@@ -116,7 +115,6 @@ const TeacherAccount = () => {
                                         <TableCell>{teacher.first_name}</TableCell>
                                         <TableCell>{teacher.middle_name}</TableCell>
                                         <TableCell>{teacher.last_name}</TableCell>
-                                        <TableCell>{teacher.suffix}</TableCell>
                                         <TableCell>{teacher.username}</TableCell>
                                         <TableCell>{teacher.position}</TableCell>
                                         <TableCell>{teacher.status}</TableCell>
@@ -132,7 +130,7 @@ const TeacherAccount = () => {
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={10} className="text-center text-muted-foreground">
+                                    <TableCell colSpan={9} className="text-center text-muted-foreground">
                                         <SearchAlert className="mx-auto" />
                                         No teacher accounts found.
                                     </TableCell>

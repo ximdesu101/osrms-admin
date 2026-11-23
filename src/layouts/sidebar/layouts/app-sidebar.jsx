@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { NavMain } from "@/layouts/sidebar/layouts/nav-main";
 import { NavUser } from "@/layouts/sidebar/layouts/nav-user";
 import {
@@ -28,6 +28,7 @@ import {
     UserRound,
 } from "lucide-react";
 import { AdminLogout, StaffLogout } from "@/services/AuthService";
+import { GetAdminNotificationUnreadCount } from "@/services/documentRequestService";
 
 const adminNavMain = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -111,7 +112,16 @@ export function AppSidebar({ ...props }) {
         };
     }, [role, stored]);
 
-    const navItems = role === "staff" ? staffNavMain : adminNavMain;
+    const { data: unreadData } = useQuery({
+        queryKey: ["admin-unread-count"],
+        queryFn: GetAdminNotificationUnreadCount,
+        refetchInterval: 30000,
+    });
+    const unreadCount = unreadData?.unread_count ?? unreadData?.count ?? 0;
+
+    const navItems = (role === "staff" ? staffNavMain : adminNavMain).map((item) =>
+        item.title === "Notifications" ? { ...item, badge: unreadCount } : item
+    );
 
     const handleLogout = async () => {
         try {

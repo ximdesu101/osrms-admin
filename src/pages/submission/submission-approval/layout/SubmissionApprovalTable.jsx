@@ -59,6 +59,7 @@ import {
 import {
     GetDocumentSubmissions,
     GetDocumentSubmission,
+    MarkDocumentSubmissionUnderReview,
     ApproveDocumentSubmission,
     RequestRevision,
     DownloadDocumentSubmission,
@@ -135,6 +136,15 @@ const SubmissionApprovalTable = () => {
             queryClient.invalidateQueries({ queryKey: ["document-submission", reviewId] });
         }
     };
+
+    const markUnderReviewMutation = useMutation({
+        mutationFn: MarkDocumentSubmissionUnderReview,
+        onSuccess: (res) => {
+            toast.success(res?.message || "Document marked as under review.");
+            invalidate();
+        },
+        onError: (err) => toast.error(err.response?.data?.message || "Failed to mark as under review."),
+    });
 
     const approveMutation = useMutation({
         mutationFn: ApproveDocumentSubmission,
@@ -389,6 +399,15 @@ const SubmissionApprovalTable = () => {
                                 </div>
                             )}
 
+                            {["Submitted", "Resubmitted"].includes(detail.status) && (
+                                <div className="rounded-md border border-blue-200 bg-blue-50 p-3 flex items-start gap-2">
+                                    <AlertCircle className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+                                    <p className="text-sm text-blue-700">
+                                        Please review the submitted document first before approving. Click <strong>Mark as Under Review</strong> once you have checked the document.
+                                    </p>
+                                </div>
+                            )}
+
                             {/* Attached file */}
                             {detail.original_name ? (
                                 <div className="rounded-md border border-border bg-muted/30 p-3">
@@ -456,21 +475,37 @@ const SubmissionApprovalTable = () => {
                             <Button
                                 variant="outline"
                                 onClick={() => setRevisionOpen(true)}
-                                disabled={revisionMutation.isPending}
+                                disabled={revisionMutation.isPending || markUnderReviewMutation.isPending}
                             >
                                 <RotateCcw className="h-4 w-4" />
                                 Request Revision
                             </Button>
-                            <Button
-                                onClick={() => approveMutation.mutate(detail.id)}
-                                disabled={approveMutation.isPending}
-                            >
-                                {approveMutation.isPending
-                                    ? <Loader2 className="h-4 w-4 animate-spin" />
-                                    : <CheckCircle2 className="h-4 w-4" />
-                                }
-                                Approve
-                            </Button>
+
+                            {["Submitted", "Resubmitted"].includes(detail.status) && (
+                                <Button
+                                    onClick={() => markUnderReviewMutation.mutate(detail.id)}
+                                    disabled={markUnderReviewMutation.isPending}
+                                >
+                                    {markUnderReviewMutation.isPending
+                                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                                        : <Eye className="h-4 w-4" />
+                                    }
+                                    Mark as Under Review
+                                </Button>
+                            )}
+
+                            {detail.status === "Under Review" && (
+                                <Button
+                                    onClick={() => approveMutation.mutate(detail.id)}
+                                    disabled={approveMutation.isPending}
+                                >
+                                    {approveMutation.isPending
+                                        ? <Loader2 className="h-4 w-4 animate-spin" />
+                                        : <CheckCircle2 className="h-4 w-4" />
+                                    }
+                                    Approve
+                                </Button>
+                            )}
                         </DialogFooter>
                     )}
                 </DialogContent>

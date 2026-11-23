@@ -2,26 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-    Eye,
-    Loader2,
-    UserRound,
-    IdCardLanyard,
-    UserStar,
-    GraduationCap,
-    MapPin,
-    Phone,
-    CircleCheck,
-    CircleX,
-    Clock3,
-} from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Eye, Loader2, UserRound, BriefcaseBusiness, GraduationCap, MapPin, Phone, CircleCheck, CircleX, Clock3 } from "lucide-react";
 import { GetTeacher } from "@/services/teacherService";
 
 const statusConfig = {
@@ -39,7 +21,6 @@ const InfoRow = ({ label, value }) => (
 
 const ViewProfile = ({ teacher }) => {
     const [open, setOpen] = useState(false);
-
     const { data, isLoading, isError } = useQuery({
         queryKey: ["teacher-profile", teacher.id],
         queryFn: () => GetTeacher(teacher.id),
@@ -52,115 +33,69 @@ const ViewProfile = ({ teacher }) => {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" title="View Profile">
-                    <Eye />
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-                <DialogHeader>
-                    <DialogTitle>Teacher Profile</DialogTitle>
-                </DialogHeader>
+            <DialogTrigger asChild><Button variant="ghost" size="icon" title="View Profile"><Eye /></Button></DialogTrigger>
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+                <DialogHeader><DialogTitle>Teacher Profile</DialogTitle></DialogHeader>
                 <Separator />
 
-                {isLoading && (
-                    <div className="flex items-center justify-center py-8 text-muted-foreground">
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Loading profile…
-                    </div>
-                )}
-
-                {isError && (
-                    <p className="py-4 text-center text-sm text-destructive">
-                        Failed to load profile. Please try again.
-                    </p>
-                )}
+                {isLoading && <div className="flex items-center justify-center py-8 text-muted-foreground"><Loader2 className="mr-2 h-5 w-5 animate-spin" />Loading profile…</div>}
+                {isError && <p className="py-4 text-center text-sm text-destructive">Failed to load profile. Please try again.</p>}
 
                 {profile && (
-                    <div className="grid gap-4 max-h-[70vh] overflow-y-auto pr-1">
-                        {/* Account Status */}
+                    <div className="grid gap-4">
                         <div className="flex items-center gap-2">
                             <StatusIcon className={`h-4 w-4 ${statusMeta.className}`} />
-                            <span className={`text-sm font-medium ${statusMeta.className}`}>
-                                {statusMeta.label}
-                            </span>
+                            <span className={`text-sm font-medium ${statusMeta.className}`}>{statusMeta.label}</span>
                         </div>
 
-                        {/* Personal Information */}
                         <div>
-                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                <UserRound className="h-3 w-3" /> Personal Information
-                            </p>
+                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><UserRound className="h-3 w-3" /> Personal Information</p>
                             <div className="rounded-md border px-3">
-                                <InfoRow label="First Name"   value={profile.first_name} />
-                                <Separator />
-                                <InfoRow label="Middle Name"  value={profile.middle_name} />
-                                <Separator />
-                                <InfoRow label="Last Name"    value={profile.last_name} />
-                                <Separator />
-                                <InfoRow label="Suffix"       value={profile.suffix} />
-                            </div>
-                        </div>
-
-                        {/* Account Information */}
-                        <div>
-                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                <IdCardLanyard className="h-3 w-3" /> Account Information
-                            </p>
-                            <div className="rounded-md border px-3">
-                                <InfoRow label="Employee ID" value={profile.teacher_id} />
-                                <Separator />
-                                <InfoRow label="Username"    value={profile.username} />
-                                <Separator />
-                                <InfoRow label="Activated"   value={
-                                    profile.activated_at
-                                        ? new Date(profile.activated_at).toLocaleDateString()
-                                        : null
-                                } />
-                                <Separator />
-                                <InfoRow label="Date Added" value={
-                                    profile.created_at
-                                        ? new Date(profile.created_at).toLocaleDateString()
-                                        : null
-                                } />
-                            </div>
-                        </div>
-
-                        {/* Employment Information */}
-                        <div>
-                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                <UserStar className="h-3 w-3" /> Employment
-                            </p>
-                            <div className="rounded-md border px-3">
-                                <InfoRow label="Position"        value={profile.position} />
-                                <Separator />
-                                <InfoRow label="Class Advisory"  value={profile.class_advisory} />
-                            </div>
-                        </div>
-
-                        {/* Address */}
-                        <div>
-                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                <MapPin className="h-3 w-3" /> Address
-                            </p>
-                            <div className="rounded-md border px-3">
-                                <InfoRow label="Region"           value={profile.region} />
-                                <Separator />
-                                <InfoRow label="Province"         value={profile.province} />
-                                <Separator />
-                                <InfoRow label="City/Municipality" value={profile.city_municipality} />
-                                <Separator />
-                                <InfoRow label="Barangay"         value={profile.barangay} />
-                            </div>
-                        </div>
-
-                        {/* Contact */}
-                        <div>
-                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                <Phone className="h-3 w-3" /> Contact
-                            </p>
-                            <div className="rounded-md border px-3">
+                                <InfoRow label="First Name" value={profile.first_name} /><Separator />
+                                <InfoRow label="Middle Name" value={profile.middle_name} /><Separator />
+                                <InfoRow label="Last Name" value={profile.last_name} /><Separator />
+                                <InfoRow label="Suffix" value={profile.suffix} /><Separator />
+                                <InfoRow label="Sex" value={profile.sex} /><Separator />
+                                <InfoRow label="Religion" value={profile.religion} /><Separator />
+                                <InfoRow label="Ethnic Group" value={profile.ethnic_group} /><Separator />
                                 <InfoRow label="Contact Number" value={profile.contact_number} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><MapPin className="h-3 w-3" /> Address</p>
+                            <div className="rounded-md border px-3">
+                                <InfoRow label="Region" value={profile.region} /><Separator />
+                                <InfoRow label="Province / District" value={profile.province} /><Separator />
+                                <InfoRow label="City / Municipality" value={profile.city_municipality} /><Separator />
+                                <InfoRow label="Barangay" value={profile.barangay} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><BriefcaseBusiness className="h-3 w-3" /> Employment Information</p>
+                            <div className="rounded-md border px-3">
+                                <InfoRow label="Employee ID" value={profile.teacher_id} /><Separator />
+                                <InfoRow label="TIN" value={profile.tin} /><Separator />
+                                <InfoRow label="Fund Source" value={profile.fund_source} /><Separator />
+                                <InfoRow label="Position Designation" value={profile.position} /><Separator />
+                                <InfoRow label="Nature of Appointment" value={profile.nature_of_appointment} /><Separator />
+                                <InfoRow label="Hiring Arrangement" value={profile.hiring_arrangement} /><Separator />
+                                <InfoRow label="Status (ITEM)" value={profile.item_status} /><Separator />
+                                <InfoRow label="Class Advisory" value={profile.class_advisory} /><Separator />
+                                <InfoRow label="Username" value={profile.username} /><Separator />
+                                <InfoRow label="Activated" value={profile.activated_at ? new Date(profile.activated_at).toLocaleDateString() : null} /><Separator />
+                                <InfoRow label="Date Added" value={profile.created_at ? new Date(profile.created_at).toLocaleDateString() : null} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><GraduationCap className="h-3 w-3" /> Educational Background</p>
+                            <div className="rounded-md border px-3">
+                                <InfoRow label="Degree Finished" value={profile.degree_finished} /><Separator />
+                                <InfoRow label="Minor" value={profile.minor} /><Separator />
+                                <InfoRow label="Post-Graduate" value={profile.post_graduate} /><Separator />
+                                <InfoRow label="PRC Specialization" value={profile.prc_specialization} />
                             </div>
                         </div>
                     </div>

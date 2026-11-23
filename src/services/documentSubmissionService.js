@@ -33,6 +33,11 @@ export const GetDocumentSubmission = async (id) => {
     return response.data;
 };
 
+export const MarkDocumentSubmissionUnderReview = async (id) => {
+    const response = await api.post(`/admin/document-submissions/${id}/mark-under-review`);
+    return response.data;
+};
+
 export const ApproveDocumentSubmission = async (id) => {
     const response = await api.post(`/admin/document-submissions/${id}/approve`);
     return response.data;

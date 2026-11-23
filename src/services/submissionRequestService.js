@@ -1,8 +1,8 @@
 import api from "@/lib/axios";
 
-export const GetSubmissionRequests = async ({ page = 1, search = "", status = "All" } = {}) => {
+export const GetSubmissionRequests = async ({ page = 1, search = "", status = "All", ...extra } = {}) => {
     const response = await api.get("/admin/submission-requests", {
-        params: { page, search, status },
+        params: { page, search, status, ...extra },
     });
     return response.data;
 };

@@ -122,32 +122,12 @@ function SubmissionSection({ req }) {
         if (req.status === "Cancelled") return null;
 
         if (req.status === "Submitted") {
-            const route = DOCUMENT_ROUTE_MAP[req.document_name];
-
             return (
-                <div className="rounded-md border border-green-200 bg-green-50 p-3 space-y-2">
-                    <div className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-green-600" />
-                        <p className="text-green-700 text-sm">
-                            The teacher's document has been approved and filed. You can find it in the{" "}
-                            <strong>{route ? route.label : req.document_name}</strong> section
-                            {route ? (
-                                <>
-                                    {" "}under <strong>{route.tab}</strong>
-                                </>
-                            ) : null}
-                            .
-                        </p>
-                    </div>
-                    {route && (
-                        <button
-                            type="button"
-                            onClick={() => navigate(route.path)}
-                            className="ml-6 text-xs font-medium text-green-700 underline underline-offset-2 hover:text-green-900"
-                        >
-                            Go to {route.label} →
-                        </button>
-                    )}
+                <div className="rounded-md border border-sky-200 bg-sky-50 p-3 flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-sky-600 shrink-0" />
+                    <p className="text-sm text-sky-700">
+                        Document submitted. Awaiting admin review.
+                    </p>
                 </div>
             );
         }
@@ -191,17 +171,36 @@ function SubmissionSection({ req }) {
                 </div>
             )}
 
-            {sub.status === "Approved" && (
-                <div className="rounded-md border border-green-200 bg-green-50 p-3">
-                    <p className="flex items-center gap-1.5 text-xs font-medium text-green-700 uppercase tracking-wide mb-1">
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        Document Approved
-                    </p>
-                    {sub.approved_at && (
-                        <p className="text-green-600 text-xs">Approved on {fmt(sub.approved_at)}.</p>
-                    )}
-                </div>
-            )}
+            {sub.status === "Approved" && (() => {
+                const route = DOCUMENT_ROUTE_MAP[req.document_name];
+                return (
+                    <div className="rounded-md border border-green-200 bg-green-50 p-3 space-y-2">
+                        <div className="flex items-start gap-2">
+                            <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-green-600" />
+                            <div>
+                                <p className="text-green-700 text-sm font-medium">Document Approved</p>
+                                <p className="text-green-700 text-sm">
+                                    The teacher&apos;s document has been approved and filed. You can find it in the{" "}
+                                    <strong>{route ? route.label : req.document_name}</strong> section
+                                    {route ? <> under <strong>{route.tab}</strong></> : null}.
+                                </p>
+                                {sub.approved_at && (
+                                    <p className="text-green-600 text-xs mt-1">Approved on {fmt(sub.approved_at)}.</p>
+                                )}
+                            </div>
+                        </div>
+                        {route && (
+                            <button
+                                type="button"
+                                onClick={() => navigate(route.path)}
+                                className="ml-6 text-xs font-medium text-green-700 underline underline-offset-2 hover:text-green-900"
+                            >
+                                Go to {route.label} →
+                            </button>
+                        )}
+                    </div>
+                );
+            })()}
         </div>
     );
 }

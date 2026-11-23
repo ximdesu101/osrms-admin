@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -71,13 +71,66 @@ const Draft = () => {
     const [cancelTarget, setCancelTarget] = useState(null);
     const queryClient = useQueryClient();
 
+    const role = localStorage.getItem("auth_role") || "admin";
+    const currentUser = useMemo(() => {
+        try {
+            const raw = localStorage.getItem(role === "staff" ? "staff" : "admin");
+            return raw ? JSON.parse(raw) : null;
+        } catch {
+            return null;
+        }
+    }, [role]);
+
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["submission-drafts", { page, search }],
-        queryFn: () => GetSubmissionRequests({ page, search, status: "Draft" }),
+        queryKey: ["submission-drafts", { page, search, role, userId: currentUser?.id }],
+        queryFn: () =>
+            GetSubmissionRequests({
+                page,
+                search,
+                status: "Draft",
+                mine: true,
+            }),
         placeholderData: keepPreviousData,
     });
 
-    const drafts = data?.data ?? [];
+    const drafts = useMemo(() => {
+        const items = data?.data ?? [];
+        return items.filter((draft) => {
+            const creatorRole = (
+                draft.created_by_role ??
+                draft.creator_role ??
+                draft.author_role ??
+                draft.owner_role ??
+                ""
+            )
+                .toString()
+                .toLowerCase();
+            const creatorId =
+                draft.created_by_id ??
+                draft.creator_id ??
+                draft.author_id ??
+                draft.user_id ??
+                draft.owner_id ??
+                null;
+
+            // Admins should only see admin-created drafts.
+            if (role === "admin") {
+                if (creatorRole) return creatorRole === "admin";
+                if (creatorId != null && currentUser?.id != null) {
+                    return String(creatorId) === String(currentUser.id);
+                }
+                return true;
+            }
+
+            // Staff/teachers should only see their own drafts.
+            if (creatorId != null && currentUser?.id != null) {
+                return String(creatorId) === String(currentUser.id);
+            }
+            if (creatorRole) return creatorRole === "staff" || creatorRole === "teacher";
+            return true;
+        });
+    }, [data?.data, role, currentUser?.id]);
+
     const lastPage = data?.last_page ?? 1;
     const currentPage = data?.current_page ?? 1;
 

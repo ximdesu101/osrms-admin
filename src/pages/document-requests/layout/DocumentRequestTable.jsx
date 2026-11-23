@@ -121,7 +121,9 @@ const DocumentRequestTable = () => {
         enabled: !!selectedId,
     });
 
-    const requests = (data?.data ?? []).filter((r) => r.status !== "Cancelled");
+    const requests = (data?.data ?? []).filter(
+        (r) => r.status !== "Cancelled" && r.status !== "Draft"
+    );
     const lastPage = data?.last_page ?? 1;
     const currentPage = data?.current_page ?? 1;
     const detail = detailData?.request;

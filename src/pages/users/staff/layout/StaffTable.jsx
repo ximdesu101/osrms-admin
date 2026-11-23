@@ -85,7 +85,6 @@ const StaffAccount = () => {
                                 <TableHead className="text-white">First Name</TableHead>
                                 <TableHead className="text-white">Middle Name</TableHead>
                                 <TableHead className="text-white">Last Name</TableHead>
-                                <TableHead className="text-white">Suffix</TableHead>
                                 <TableHead className="text-white">Username</TableHead>
                                 <TableHead className="text-white">Position</TableHead>
                                 <TableHead className="text-white">Status</TableHead>
@@ -97,14 +96,14 @@ const StaffAccount = () => {
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={10} className="text-center text-muted-foreground">
+                                    <TableCell colSpan={9} className="text-center text-muted-foreground">
                                         <Loader className="mx-auto animate-spin" />
                                         Loading staff accounts...
                                     </TableCell>
                                 </TableRow>
                             ) : isError ? (
                                 <TableRow>
-                                    <TableCell colSpan={10} className="text-center text-destructive">
+                                    <TableCell colSpan={9} className="text-center text-destructive">
                                         <DatabaseX className="mx-auto" />
                                         Failed to load staff accounts.
                                     </TableCell>
@@ -116,7 +115,6 @@ const StaffAccount = () => {
                                         <TableCell>{staff.first_name}</TableCell>
                                         <TableCell>{staff.middle_name}</TableCell>
                                         <TableCell>{staff.last_name}</TableCell>
-                                        <TableCell>{staff.suffix}</TableCell>
                                         <TableCell>{staff.username}</TableCell>
                                         <TableCell>{staff.position}</TableCell>
                                         <TableCell>{staff.status}</TableCell>
@@ -132,7 +130,7 @@ const StaffAccount = () => {
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={10} className="text-center text-muted-foreground">
+                                    <TableCell colSpan={9} className="text-center text-muted-foreground">
                                         <SearchAlert className="mx-auto" />
                                         No staff accounts found.
                                     </TableCell>

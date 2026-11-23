@@ -1,35 +1,24 @@
 import api from "@/lib/axios";
-import { GetSubmissionRequests } from "@/services/submissionRequestService";
+import { GetSubmissionRequestMetrics } from "@/services/submissionRequestService";
 
 /**
  * Fetch aggregated dashboard metrics for submission requests:
  *   { complete, pending, missing, overdue }
  */
 export const GetDashboardMetrics = async () => {
-    const [completedRes, requestedRes, acknowledgedRes, overdueRes, needsRevRes, awaitingRes, cancelledRes] =
-        await Promise.all([
-            GetSubmissionRequests({ page: 1, status: "Completed" }),
-            GetSubmissionRequests({ page: 1, status: "Requested" }),
-            GetSubmissionRequests({ page: 1, status: "Acknowledged" }),
-            GetSubmissionRequests({ page: 1, status: "Overdue" }),
-            GetSubmissionRequests({ page: 1, status: "Needs Revision" }),
-            GetSubmissionRequests({ page: 1, status: "Awaiting Approval" }),
-            GetSubmissionRequests({ page: 1, status: "Cancelled" }),
-        ]);
+    const metrics = await GetSubmissionRequestMetrics();
 
-    const total = (res) => res?.total ?? res?.data?.length ?? 0;
-
-    const pending =
-        total(requestedRes) +
-        total(acknowledgedRes) +
-        total(needsRevRes) +
-        total(awaitingRes);
+    const requested = metrics?.requested ?? 0;
+    const acknowledged = metrics?.acknowledged ?? 0;
+    const submitted = metrics?.submitted ?? 0;
+    const overdue = metrics?.overdue ?? 0;
+    const cancelled = metrics?.cancelled ?? 0;
 
     return {
-        complete: total(completedRes),
-        pending,
-        missing: total(cancelledRes),
-        overdue: total(overdueRes),
+        complete: submitted,
+        pending: requested + acknowledged,
+        missing: cancelled,
+        overdue,
     };
 };
 
